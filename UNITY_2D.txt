@@ -1,0 +1,1051 @@
+1 ----------->>> MOVIMIENTO AUTOMATIZADO.
+obcion 1:
+
+-gameObject.transform.position = new Vector3(gameObject.transform.position.x +0.1f * Time.deltaTime,gameObject.transform.position.y,gameObject.transform.position.z);
+
+obcion 2:
+
+-gameObject.transform.Translate(40f * Time.deltaTime, 0,0); 
+
+Time.deltaTime //hara que el moviminto sea segun tu pc este establecidad los frames. o sea que multiplica el timpo en que a tardado la pc en reanderizar el ultimo frame.
+
+
+2 ------------>>> MOVIMIENTO DE PERSONAJES :
+
+opcion 1:
+
+    void Update()
+    {
+        if (Input.GetKey("left")) {
+            gameObject.transform.Translate(-35f * Time.deltaTime,0,0);
+        }
+        if (Input.GetKey("right")) {
+            gameObject.transform.Translate(35f *Time.deltaTime,0,0);
+        }
+    }
+
+//para subir y para bajar usaremos "down".
+
+        if (Input.GetKey("up"))
+        {
+            gameObject.transform.Translate(0,35f * Time.deltaTime, 0);
+        }
+
+
+//TAMBIEN SE PUEDE USAR EL A,W,S,D:
+
+    void Update()
+    {
+        if (Input.GetKey("a")) {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1000f*Time.deltaTime,0));
+        }
+        if (Input.GetKey("d")) {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(1000f*Time.deltaTime,0));
+        }
+        if (Input.GetKeyDown("w") && canJump ) {
+            canJump = false;
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,400f));
+        }
+    }
+
+3------------->>>  COLICION Y SALTO :
+
+    private bool canJump;   //SIN DAR VALOR ES TRUE.
+
+    void Update()
+    {
+        if (Input.GetKey("left")) {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1000f*Time.deltaTime,0));
+        }
+        if (Input.GetKey("right")) {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(1000f*Time.deltaTime,0));
+        }
+        if (Input.GetKeyDown("up") && canJump ) {                 //CONDICION PARA SI TOCA LA TECLA UP Y QUE canJump SEA TRUE.
+            canJump = false;                 			// AL DENTRAR SE CONVIERTE EN FALSE PARA QUE NO HAYA SALTOS DOBLES O TRIPLES ETC.
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,500f));          //AUMENTA LA FISICA DEL EJE "Y"  EN 500.
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)  
+    {
+        if (collision.transform.tag =="ground")   //DONDE CREAMOS UN TAG PARA QUE SES ESE EL GROUND O SEA SOLO CON ESE OBJETO, SI LA COLICON ES CON ground Q ES TAG DE GROUND
+        {                                        //ENTONCES PODRA SALTAR DENUEVO.
+            canJump = true;
+        }
+    }
+
+4 ------------->>>> 2 players :
+
+pues creas otro objeto script etc y listo comandos diferentes etc .
+
+RECUERDA QUE SI QUEIRES ANIMAR UN ONJETO QUE MEDIANTE EL CODIGO SE ESTABLECIENDO SU NUEVA POSICICON DEBES CREAR UNA NUEVA INSTANCIA CON UN PADRE.
+
+5 --------------->>>	MODIFICACION DE DATOS BOOL EN ANIMATOR  Y BOLTEO DE PERSONAJE PARA QUE VEA A OTRA DIRECCION :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CONTROLLER : MonoBehaviour
+{
+    private bool canJump;
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKey("left")) {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1000f*Time.deltaTime,0));
+            gameObject.GetComponent<Animator>().SetBool("moving",true);                              //CAMBIO DE ANIMACION.
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;				// FLIPX PARA QUE MIRE AL OTRO LADO.
+        }
+        if (Input.GetKey("right")) {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(1000f*Time.deltaTime,0));
+            gameObject.GetComponent<Animator>().SetBool("moving",true);
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        }
+        if (Input.GetKeyDown("up") && canJump ) {
+            canJump = false;
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,400f));
+        }
+
+        if (!Input.GetKey("left") && !Input.GetKey("right"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("moving",false);       //PARA QUE SALGA DEL MOVIMIENTO.
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.tag =="ground")
+        {
+            canJump = true;
+        }
+    }
+}
+
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CONTROLLER : MonoBehaviour
+{
+    private bool canJump;
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKey("left")) {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1000f*Time.deltaTime,0));
+            gameObject.GetComponent<Animator>().SetBool("moving",true);
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        if (Input.GetKey("right")) {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(1000f*Time.deltaTime,0));
+            gameObject.GetComponent<Animator>().SetBool("moving",true);
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        }
+        if (Input.GetKeyDown("up") && canJump ) {
+            canJump = false;
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,400f));
+            gameObject.GetComponent<Animator>().SetBool("down",true);
+        }
+
+        if (!Input.GetKey("left") && !Input.GetKey("right"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("moving",false);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.tag =="ground")
+        {
+            canJump = true;
+            gameObject.GetComponent<Animator>().SetBool("down",false);
+        }
+    }
+}
+
+6 ----------------->>>> HACER UN TEMPORAL O ESPERARA PARA PASAR A LA SIGUIENTE LINEA :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CONTROLLER : MonoBehaviour
+{
+    private bool canJump;
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKey("left")) {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1000f*Time.deltaTime,0));
+            gameObject.GetComponent<Animator>().SetBool("moving",true);
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        if (Input.GetKey("right")) {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(1000f*Time.deltaTime,0));
+            gameObject.GetComponent<Animator>().SetBool("moving",true);
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        }
+        if (Input.GetKeyDown("up") && canJump ) {
+            canJump = false;
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,400f));
+            gameObject.GetComponent<Animator>().SetBool("down",true);
+        }
+
+        if (Input.GetKey("down"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("sitdown",true);
+        }
+        else
+        {
+            gameObject.GetComponent<Animator>().SetBool("sitdown", false);
+        }
+            
+
+
+        if (!Input.GetKey("left") && !Input.GetKey("right"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("moving",false);
+        }
+
+        if (Input.GetKeyDown("a"))   //GETYKEYDOWN SIRVE PARA SOLO UN PRESIONADO DE TECLA AL MOMENTO DE BAJAR LA TECLA SE INICIA Y NO PUEDE MÁS HASTA Q SE SUBA DENUEVO.
+        {
+            gameObject.GetComponent<Animator>().SetBool("attacking",true);
+            StartCoroutine(esperar());    					 // COMO SE DEBE LLAMAR.
+
+        }
+
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.tag =="ground")
+        {
+            canJump = true;
+            gameObject.GetComponent<Animator>().SetBool("down",false);
+        }
+    }
+    public IEnumerator esperar()                      				// FUNCION PARA ESPERAR.
+    {
+        yield return new WaitForSeconds(0.4f);
+        gameObject.GetComponent<Animator>().SetBool("attacking",false);
+    }
+}
+
+
+7 ------------>>>PARA DESACTIVAR UN ELEMENTO A LA HORA DE TOCARLO :
+
+EN EL BOX COLIDER 2D Y OTROS PONERMOS CHECK A "IS TIGGER" PARA QUE PUEDA SER ATRAVESADO.
+
+Y EN SU SCRIPT PARA DESACTIVAR EL OBJETO ASI :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CoinController : MonoBehaviour
+{
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        gameObject.SetActive(false);
+    }
+}
+
+8--------------->>> DESTRUIR OBJETOS :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CoinController : MonoBehaviour
+{
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Destroy(gameObject);
+    }
+}
+
+9 --------------->>> MONEDA APARICION Y POSICION NUEVA :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class coinsrespawner : MonoBehaviour
+{
+    float timer;
+    public GameObject coinprefap;
+    void Update()
+    {
+        timer += Time.deltaTime;
+
+        if (timer >=2f) {
+            timer = 0;
+
+            float x = Random.Range(-30f,30f);
+            Vector3 position = new Vector3(x,0,0);
+            Quaternion rotation = new Quaternion();
+            Instantiate(coinprefap,position,rotation);
+        }
+    }
+}
+
+10 ---------------->>>  COMO CONECTAR UNA SCRIPT CON OTRO :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ScoreManager : MonoBehaviour
+{
+
+    public static ScoreManager scoreManager;        //HACEMOS A LA CLASE ESTATICA PARA 	QUE NO SEA AFECTADA MIENTRAS NO SE LLAME A LAS FUNCIONES.                          
+
+    int score = 0;
+    void Start()
+    {
+        scoreManager = this;           ///para cuando comienze la clase se estara llamando a esta instancia. O SEA ESTE SCRIPT.
+    }
+    public void RaiseScore(int val) {
+        score+=val;
+        Debug.Log(score);         //MONSTRAREMOS POR CONSOLA EL PUNTAJE.
+    }
+}
+
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CoinController : MonoBehaviour
+{
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        ScoreManager.scoreManager.RaiseScore(1);         //SE LLAMA A LA CLASE, LUEGO A LA VARIABLE ESTATICA Y A SU FUNCION.
+        Destroy(transform.parent.gameObject);
+    }
+}
+
+11 ---------------->>>  CREAR UN TEXTO Y MOSTAR POR PANTALLA :
+
+ANTICLICK - UI - TEXT : RECORDAR EXPANDIR EL REMOLINO A TODO EL FRAME O MARCO.
+
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;            // IMPORTAMOS LA LIBRERIA UNITYENGINE.UI 
+
+public class ScoreManager : MonoBehaviour
+{
+
+    public static ScoreManager scoreManager;
+    public Text textScore;                        //CREAMOS UNA VARIABLE PUBLICA PARA QUE EN UNITY COLOQUEMOS EL TEXT EN LA CASILLA DE SCOREMANAGER.
+
+    int score = 0;
+    void Start()
+    {
+        scoreManager = this;
+    }
+    public void RaiseScore(int val) {
+        score+=val;
+        textScore.text = "SCORE : "+ score.ToString();          //LA VARIABLE TEXT Y .TEXT PARA CAMBIAR EL TEXTO A "SCORE :"+ SCORE.TOSTRING(); QUE CONVIERTE EL ENTERO A STRING.
+    }
+}
+
+
+12 ---------------->>>>  CAMBIO DE SCENA :
+
+ANTES QUE NADA PRIMERO GUARDAREMOS EN UNITY LA SCENA 1 COMO ES DE SOTUMBRE, DESPUES EN EL BUILD AGREGAREMOS LAS SCENAS A HACER Y GUARDAMOS LA OTRA SCENA N2:
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;    //IMPORTAMOS ESTA LIBRERIA.
+
+public class ScoreManager : MonoBehaviour
+{
+
+    public static ScoreManager scoreManager;
+    public Text textScore;
+
+    int score = 0;
+    void Start()
+    {
+        if (scoreManager == null)     
+        {
+            scoreManager = this;             SALVARA EL SCORE SI SOLO SI ESTA VACIO.
+            DontDestroyOnLoad(this);         NO DESTRUIRA ESTA INSTANCIA.
+        }
+        else
+        {
+            Destroy(gameObject);     //DESTRUIRA EL OBJETO.
+        }
+    }
+
+    private void Update()
+    {
+        if(textScore == null)             //PARA RESFRESCAR EL TEXTO PARA PASAR DE SCENA.
+        {
+            textScore = GameObject.Find("Text").GetComponent<Text>();         //COMANDOS APRA BUSCAR ALGO POR SCENA
+            textScore.text = "SCORE: " + score;                            //MODIFICAMOS EL TEXT CON EL SCORE ANTERIOR DE LA SCENA ANTERIOR.
+        }
+    }
+    public void RaiseScore(int val) {
+        score+=val;
+        textScore.text = "SCORE : "+ score.ToString();
+        if (score == 10)
+        {
+            SceneManager.LoadScene("SCENA02");             //LLAMADO A LA FUNCION PARA EL CAMBIO DE SCENA.
+        }
+    }
+}
+
+13 ------------------>>>> FORDA DE INTERACTUAR CON OTRAS CLASES O SCRIPTS :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+public class GAME_OVER : MonoBehaviour
+{
+    public ScoreManager scoreManager;
+
+    public Text scoretext;
+    public Text scoretime;
+
+    int sc=ScoreManager.scoreManager.score;
+    int tm=ScoreManager.scoreManager.contador;
+
+    private void Update()
+    {
+
+        scoretext.text = "SCORE: " + sc;
+
+        scoretime.text = "TIME: " + tm;
+
+    }
+
+}
+
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+public class ScoreManager : MonoBehaviour
+{
+
+    public static ScoreManager scoreManager;
+    public Text textScore;
+    public Text textTime;
+
+    public int score = 0;
+    int contador_time = 25;
+    public int contador = 0;
+
+    void Start()
+    {
+        if (scoreManager == null)
+        {
+            scoreManager = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        if(textScore == null)
+        {
+            textScore = GameObject.Find("Text").GetComponent<Text>();
+            textScore.text = "SCORE: " + score;
+        }
+        if (textTime == null)
+        {
+            textTime = GameObject.Find("Text3").GetComponent<Text>();
+            contador_time = 25;
+            textTime.text = "TIME: " + contador_time;
+        }
+        tiempo_alex();
+    }
+
+    public void RaiseScore(int val) {
+        score+=val;
+        textScore.text = "SCORE : " + score.ToString();
+    }
+
+    public void tiempo_alex()
+    {
+        contador++;
+        if(contador % 100 == 0)
+        {
+            contador_time--;
+            textTime.text="TIME: "+contador_time.ToString();
+        }
+        if (contador == 1000)
+        {
+            SceneManager.LoadScene("SCENA_F");
+            Destroy(gameObject);
+        }
+
+        if (contador == 5000)
+        {
+            SceneManager.LoadScene("SCENA03");
+        }
+        if (contador == 7500)
+        {
+            SceneManager.LoadScene("SCENA01");
+        }
+    }
+}
+
+VIDEO QUE AYUDARA : https://www.youtube.com/watch?v=u1dLdXBTBB8
+
+14 ------------------->>>> SUELO QUE SE CAE AL SER TOCADO POR PLAYER :
+
+ANTES QUE TODO AÑADIREMOS UN RB2D AL SUELO Y PONEMOS EN BODY TYPE "KYNEMATIC" PARA QUE SEA POR FUERZA.
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class cae_suelo : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.transform.tag == "player")
+        {
+            gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
+        }
+    }
+}
+
+15 ---------------------->>> PARA MOVER UN OBJETO USAREMOS :
+
+x = la posiciom que tu quieras.
+gameObject.transform.position = new Vector3(x,x,x);
+
+para sseguir a un personaje como la barra de p1 o p2:
+
+        float icoY = gameObject.transform.position.y + 2.5f;
+        float icoX = gameObject.transform.position.x;
+
+        icono_player01.transform.position = new Vector3(icoX,icoY,0);
+
+16 --------------------->>> PADRE :
+
+//RECUERDA QUE UN HIJO DENTRO DE UN PADRE SE PUEDE MOVER A VOLUNTAD PROPIA, MIENTRAS EL PADRE ES EL QUE DECIDE EL LUGAR A DONDE SE EXTABLERECERA LA ZONA DE TODO.
+
+17 --------------------->>> PONER AGUA:
+https://www.youtube.com/watch?v=0D_X92xhjv8
+
+18 ---------------------->>>> DEJAR DE HACER ALGO AL DEJAR DE COLISIONAR :
+
+    private void OnCollisionEnter2D(Collision2D collision)              //LO NORMAL AL COLISIONAR.
+    {
+        if(collision.transform.tag=="player" || collision.transform.tag == "player02")
+        {
+            gameObject.GetComponent<Animator>().SetBool("bt01",true);
+            bar_01.activar_01();
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision)          //UNA VEZ DEJO DE COLISIONAR ENTRA.
+    {
+        bar_01.desactivar_01();
+        gameObject.GetComponent<Animator>().SetBool("bt01", false);
+    }
+
+19 -------------------->>>  SEGUIMINETO DE CAMARA :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class camara_follow : MonoBehaviour
+{
+    public GameObject pj01;          //ENVIE LOS PARAMETROS DEL PLAYER 01
+    public GameObject pj02;          //PLAYER 02
+
+    public Vector2 minpos, maxpos;         // ESTO ABRE EN UNITY UN CAMPO DOBLE ASI "MINPOS  X:0 Y:0 /n MAXPOS X:0 Y:0".  PUEDES CAMBIARLO SEGUN LOS LIMITES QUE QUIERAS.
+    void Start()
+    {
+        
+    }
+
+    void Update()
+    {
+        float posx = (pj01.transform.position.x + pj02.transform.position.x)/2;  //FORMULA DEL PUNTO MEDIO.
+        float posy = (pj01.transform.position.y + pj02.transform.position.y)/2;
+        gameObject.transform.position = new Vector3(                                                                                     
+            Mathf.Clamp(posx,minpos.x,maxpos.x),           //LA FUNCION MATH.CLAMP SIRVE PARA ESTABLECER LIMITES EN LOS VALORES DADOS "Clamp(float value, float min, float max);"
+            Mathf.Clamp(posy, minpos.y, maxpos.y),
+            gameObject.transform.position.z);          //ESTA ES LA POSICION POR DEFECTUO DE LA CAMARA.
+    }
+}
+
+20 --------------------->>> INPUT.GETKEY() :
+ALGUNOS TIPOS DE ENTRADA :
+
+Teclas normales: “a”, “b”, “c” …
+Teclas numéricas: “1”, “2”, “3”, …
+Teclas de flecha: “Arriba”, “abajo”, “izquierda”, “derecha”
+Las teclas de teclado: “[1]”, “[2]”, “[3]”, “[+]”, “[equals]”
+Teclas de modificación: “Derecha shift”, “Izquierda shift”, “Derecha ctrl”, “Izquierda ctrl”, “Derecha alt”, “Izquierda alt”, “Derecha cmd”, “Izquierda cmd”
+Botones del mouse: “mouse 0”, “mouse 1”, “mouse 2”, …
+Botones del Joystick (desde cualquier joystick): “joystick botón 0”, “joystick botón 1”, “joystick botón 2”, …
+Botones del Joystick (Desde un joystick específico): “joystick 1 botón 0”, “joystick 1 botón 1”, “joystick 2 botón 0”, …
+Teclas especial: “backspace”, “tab”, “return”, “escape”, “space”, “delete”, “enter”, “insert”, “home”, “end”, “page up”, “page down”
+Teclas funcionales: “f1”, “f2”, “f3”, …
+
+21 -------------------->>> CREAR OBJETOS SIMULTANEMENTE :
+
+Instantiate(fireprefap, gameObject.transform.position, Quaternion.identity);
+	//PREFAP ----  EL OBJETO O LUGAR DE DONDE SE INVOCARAN ---- SI PONBEMOS .IDENTY SIGNIDICA QUE NO PUEDE ROTAR PERFECTAMENTE ALINEADO.
+
+22 -<----------------->>> USAR TIGGER PARA ATAQUES :
+
+//O SEA APENAS TERMINE LA ANIMACION DE ATAQUE PUES SEGUIRA COON LA TRANCCION DE SALIDA.
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PLAYER2_CONTROLLER : MonoBehaviour
+{
+    public GameObject fireprefap;
+    public GameObject fireprefap2;
+    public bool canjump = true;
+    void Start()
+    {
+
+    }
+
+
+    void Update()
+    {
+        float capacidad = 500f * Time.deltaTime;
+        if (Input.GetKey("left"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("caminar", true);
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-capacidad, 0));
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        if (Input.GetKey("right"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("caminar", true);
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(capacidad, 0));
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        }
+        if (Input.GetKey("up") && canjump)
+        {
+            canjump = false;
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 150f));
+        }
+        if (Input.GetKey("down"))
+        {
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, -capacidad));
+        }
+        if (Input.GetKeyDown("[1]"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("atacar", true);
+            
+            if (gameObject.GetComponent<SpriteRenderer>().flipX == true)
+            {
+                fireprefap.GetComponent<FUEGO>().lt = true;
+                Instantiate(fireprefap, gameObject.transform.position, Quaternion.identity);
+            }
+            else
+            {
+                fireprefap.GetComponent<FUEGO>().lt = false;
+                Instantiate(fireprefap, gameObject.transform.position, Quaternion.identity);
+            }
+        }
+        if (!Input.GetKey("[1]"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("atacar", false);
+        }
+        if (!Input.GetKey("left") && !Input.GetKey("right"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("caminar", false);
+        }
+    }
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.tag == "ground")
+        {
+            canjump = true;
+        }
+    }
+}
+
+//EN EL ANIMATOR SOLO HACER LA TRANCCION DE ENTRADA PARA EL ATAQUE Y UNO DE SALIDA PARA EL IDLE O EL QUE QUIERAS PERO SIN CONDICION.
+
+23 ------------------->>> COLISION DE ATAQUE :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class COMBAT_PJ : MonoBehaviour
+{
+    public Transform attackPoint;
+    public float attackRange = 0.5f;
+    public LayerMask enemyLayer;
+
+   
+    public float attackRate = 2f;
+    float nextAttack = 0f;
+   
+    void Start()
+    {
+        
+    }
+
+    void Update()
+    {
+        if(Time.time >= nextAttack)               //PARA CONTROLAR EL LAPSO DE UN ATAQUE.
+        {
+            if (Input.GetKeyDown("r"))
+            {
+                Attack_pj();
+
+                nextAttack = Time.time + 1f / attackRate;
+            }
+        }
+
+    }
+
+    void Attack_pj()
+    {
+        Collider2D[] HitEnemys = Physics2D.OverlapCircleAll(attackPoint.position,attackRange,enemyLayer);
+
+        foreach(Collider2D enemy in HitEnemys)
+        {
+            Debug.Log("we hit :"+enemy.name);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null)
+        {
+            return;
+        }
+        Gizmos.DrawWireSphere(attackPoint.position,attackRange);
+    }
+}
+
+24 ----------------------->>>>> MEJOR ROTACION : 
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PLAYER1_CONTROLLER : MonoBehaviour
+{
+    public bool canjump = true;
+    bool faserigh = true;
+
+    void Start()
+    {
+
+    }
+
+
+    void Update()
+    {
+
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.tag == "ground")
+        {
+            canjump = true;
+            gameObject.GetComponent<Animator>().SetBool("salto", false);
+        }
+    }
+
+
+
+    public void FixedUpdate()
+    {
+        float capacidad = 500f * Time.deltaTime;
+        if (Input.GetKey("a"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("caminar", true);
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-capacidad, 0));
+            if (faserigh)
+            {
+                Flip();
+            }
+
+        }
+        if (Input.GetKey("d"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("caminar", true);
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(capacidad, 0));
+            if (!faserigh)
+            {
+                Flip();
+            }
+        }
+        if (Input.GetKey("w") && canjump)
+        {
+            canjump = false;
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 150f));
+            gameObject.GetComponent<Animator>().SetBool("salto", true);
+        }
+        if (Input.GetKey("s"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("defensa", true);
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, -capacidad));
+        }
+        if (!Input.GetKey("s"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("defensa", false);
+        }
+        if (Input.GetKey("t"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("atacar", true);
+            gameObject.GetComponent<Rigidbody2D>().velocity = transform.right * 30f;
+        }
+        if (!Input.GetKey("t"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("atacar", false);
+        }
+        if (!Input.GetKey("a") && !Input.GetKey("d"))
+        {
+            gameObject.GetComponent<Animator>().SetBool("caminar", false);
+        }
+
+    }
+
+    private void Flip()
+    {
+        faserigh = !faserigh;
+        transform.Rotate(0f, 180f, 0f);
+    }
+}
+
+25 ------------------->>>> MEJOR LANZAMIENTO DE ATAQUE : 
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class FUEGO : MonoBehaviour
+{
+
+    public float speed = 20f;
+
+    void Start()
+    {
+        gameObject.GetComponent<Rigidbody2D>().velocity = transform.right * speed;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        StartCoroutine(esperar());
+    }
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.transform.tag == "player2")
+        {
+            Destroy(gameObject);
+        }
+    }
+    public IEnumerator esperar()
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
+    }
+}
+26 ------------------->>>> MEJOR POSICIONAMIENTO DE PREFAP :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class COMBAT_PJ : MonoBehaviour
+{
+    public GameObject lejosprefap;
+    public GameObject poder;
+
+    public float attackRate = 2f;
+    float nextAttack = 0f;
+   
+    void Start()
+    {
+        
+    }
+
+    void Update()
+    {
+            if (Input.GetKeyDown("y"))
+            {
+                accion_all();
+                nextAttack = Time.time + 1f / attackRate;
+            }
+        }
+
+    }
+
+
+    void accion_all()
+    {
+
+        Instantiate(lejosprefap, poder.transform.position, poder.transform.rotation);
+        gameObject.GetComponent<Animator>().SetTrigger("ataque_lejos");
+
+    }
+}
+
+27 -------------------->>>> BARRA DE VIDA :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class bar_controller : MonoBehaviour
+{
+    public float hp = 100f;
+    void Start()
+    {
+
+    }
+
+    public void recieve_damage(int damage)
+    {
+        hp = Mathf.Clamp(hp-damage,0f,100f);
+
+        gameObject.transform.localScale = new Vector2(hp/100,1f);
+    }
+}
+
+//RECORDAR PONER 0 EN EL PIVOT DEL EJE X , PARA QUE DISMINUYA SOLO DEL LADO DERECHO.
+
+28 ------------------------->>>> QUATERNION :
+
+derecha or right = new QUATERNION(0f,-1.0f,0f,0f);
+izquierda or left = new QUATERNION(0f,0f,0f,1.0f);
+arriba or up = new QUATERNION(0f,0f,1.0f,1.0f);
+abajo or down = new QUATERNION(0f,0f,-1.0f,1.0f);
+
+ejemplo: QUATERNION nombre_de_var = new QUATERNION(0f,-1.0f,0f,0f);          //ROTATION TOWARDS LEFT.
+
+
+29 --------------------->>>> GETAXIS() :
+float arriba = Input.GetAxis("Mouse Y");
+float lados = Input.GetAxis("Mouse X");
+
+public class player_controller : MonoBehaviour
+{
+    public float speed;
+    void Start()
+    {
+        
+    }
+
+    
+    void Update()
+    {
+        float x = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
+        float y = Input.GetAxis("Vertical") * Time.deltaTime * speed;
+        transform.Translate(x,y,0f);
+    }
+}
+
+30 ------------------->>> SEGUIMIENTO DE ENEMIGOS :
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class enemy_controller : MonoBehaviour
+{
+    public float rango;
+    public float speed;
+
+    GameObject player;
+
+    Vector3 vec_posi;
+
+    void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+        vec_posi = transform.position;
+    }
+
+    
+    void Update()
+    {
+        Vector3 target = vec_posi;
+        float distan = Vector3.Distance(player.transform.position,transform.position);
+        if (distan < rango)
+        {
+            target = player.transform.position; 
+        }
+        float fixed_speed = speed * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position,target,fixed_speed);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position,rango);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.tag == "Player")
+        {
+            SceneManager.LoadScene("SCENA_LOSE");
+        }
+    }
+}
+
+31--------------------->>>> 

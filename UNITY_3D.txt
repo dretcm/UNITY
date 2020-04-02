@@ -1,0 +1,48 @@
+1 -------------------->>> MOVIMIENTO BASICO + SEGUIMINETO DE CAMARA:
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class player_controller : MonoBehaviour
+{
+    public GameObject camara;
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKey("w"))
+        {
+            gameObject.GetComponent<Rigidbody>().AddForce(0,0,150f*Time.deltaTime);
+        }
+        if (Input.GetKey("a"))
+        {
+            gameObject.GetComponent<Rigidbody>().AddForce(-150f*Time.deltaTime,0,0);
+        }
+        if (Input.GetKey("d"))
+        {
+            gameObject.GetComponent<Rigidbody>().AddForce(150f * Time.deltaTime, 0, 0);
+        }
+        if (Input.GetKey("s"))
+        {
+            gameObject.GetComponent<Rigidbody>().AddForce(0,0,-150f * Time.deltaTime);
+        }
+        if (Input.GetKey("r"))
+        {
+            gameObject.GetComponent<Rigidbody>().AddForce(0,250f * Time.deltaTime, 0);
+        }
+        if (Input.GetKey("t"))
+        {
+            gameObject.GetComponent<Rigidbody>().AddForce(0, -250f * Time.deltaTime, 0);
+        }
+
+        float x = gameObject.transform.position.x;
+        float y = gameObject.transform.position.y+1f;
+        float z = gameObject.transform.position.z-1f;
+
+        camara.transform.position = new Vector3(x,y,z);
+    }
+}
